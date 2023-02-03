@@ -33,8 +33,8 @@ const App = () => {
           <Route path="/register" element={<Register/>} />
           <Route path="/login" element={<Login/>} />
           <Route path="admin" element={<AdLogin/>} />
-          <Route path="/admin/dashboard" element={<AdDashboard/>} />
-          <Route path="/admin/user" element={<AdUser/>} />
+          <Route path="/admin/dashboard" element={<AdDashboard/>} exact />
+          <Route path="/admin/user/:userId" element={<AdUser/>} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -33,7 +33,12 @@ function Header({ connectHandler, admin}) {
               </Link>
             )}
             {user && !account && (
+              <>
               <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline' onClick={connectHandler}>Login With Metamask</p>
+              
+              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Log Out</p>
+              
+              </>
             )}
 
             {user && account && (
@@ -48,7 +53,7 @@ function Header({ connectHandler, admin}) {
         </div>
 
         <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
-            <p className='hidden md:inline'><h4 className='text-2xl'>Welcome to Admin Panel User</h4></p>
+            <div className='hidden md:inline'><h4 className='text-2xl'>Welcome to Admin Panel User</h4></div>
         </div>
 
         <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
@@ -57,8 +62,8 @@ function Header({ connectHandler, admin}) {
               <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Modify Users</p>
             </Link>  
 
-            <Link to='/instruction'>
-              <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Log Out</p>
+            <Link>
+              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Log Out</p>
             </Link>
         </div>
     </div>

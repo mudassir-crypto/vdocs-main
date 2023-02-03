@@ -15,7 +15,7 @@ const Login = () => {
     if(user){
         navigate('/dashboard')
     }
-  }, [])
+  }, [user])
   
 
   const onSubmit = async (user) => {
@@ -26,11 +26,15 @@ const Login = () => {
             }
         }
         const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/login`, user, config)
-        console.log(data)
-        localStorage.setItem("userInfo", JSON.stringify(data))
+        localStorage.setItem("userInfo", JSON.stringify(data.token))
 
-        setUser(data)
-        navigate('/dashboard')
+        setUser(data.user)
+        
+        if(data.user.role === "admin"){
+            navigate('/admin/dashboard')
+        } else {
+            navigate('/dashboard')
+        }
     } catch (error) {
         console.log(error.response.data.message)
     }

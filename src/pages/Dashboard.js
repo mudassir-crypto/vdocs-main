@@ -23,18 +23,21 @@ const Dashboard = () => {
     const navigate = useNavigate()
     const { user, account, setAccount } = useStateContext()
 
-    console.log(user)
     useEffect(() => {
         // localStorage.removeItem("address")
         // localStorage.removeItem("userInfo")
         if(localStorage.address){
-            setAccount(JSON.parse(localStorage.address));
+            //setAccount(JSON.parse(localStorage.address));
             window.web3 = new Web3(window.ethereum)
             window.web3 = new Web3(window.web3.currentProvider)
         }
 
         if(!user){
             navigate('/login')
+        }
+
+        if(user.role === "admin"){
+            navigate('/admin/dashboard')
         }
 
         // if (window.ethereum) {
@@ -69,15 +72,16 @@ const Dashboard = () => {
     }
 
     const accountsChanged = async (newAccount) => {
+        const token = JSON.parse(localStorage.getItem("userInfo"))
         try {
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user}`
+                    'Authorization': `Bearer ${token}`
                 }
             }
             const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/metamask`, { metamask: newAccount}, config)
-
+            console.log(data)
             setAccount(data.account)
             localStorage.setItem("address", JSON.stringify(data.account))
         } catch (error) {
@@ -114,7 +118,7 @@ const Dashboard = () => {
         console.log(web3)
         const networkId = await web3.eth.net.getId()
         const networkData = DStorage.networks[networkId]
-        
+        console.log(`networkId: ${networkId}, networkData: ${networkData}`)
         if(networkData){
 
             const dstorageCopy = new web3.eth.Contract(DStorage.abi, networkData.address)
@@ -280,7 +284,7 @@ const Dashboard = () => {
                                                 {moment.unix(item.uploadTime).format('h:mm:ss A M/D/Y')}
                                             </td>
                                             <td className="px-6 py-4">
-                                            <a target="_blank"
+                                            <a target="_blank" rel="noreferrer"
                                                 href={`https://${item.fileHash}.ipfs.w3s.link/${item.fileName}`}
                                             >
                                                 {item.fileHash}

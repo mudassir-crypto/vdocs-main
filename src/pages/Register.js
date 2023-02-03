@@ -13,12 +13,12 @@ const Register = () => {
 
   useEffect(() => {
     if(user){
-        navigate('/dashboard')
+      navigate('/dashboard')
     }
-  }, [])
+  }, [user])
 
   const onSubmit = async (user) => {
-    console.log(user)
+    //console.log(user)
     if(user.password !== user.password2){
         console.log("Password does not match")
     } else {
