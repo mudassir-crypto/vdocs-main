@@ -6,9 +6,8 @@ import moment from "moment/moment"
 import DStorage from '../abis/DStorage.json'
 import { Web3Storage } from 'web3.storage'
 import { convertBytes } from "../components/helpers"
-import { ethers } from "ethers"
 import { useStateContext } from "../context/ContextProvider"
-
+import axios from "axios"
 
 
 const Dashboard = () => {
@@ -18,6 +17,7 @@ const Dashboard = () => {
     const [dstorage, setDstorage] = useState({})
     const [files, setFiles] = useState([])
     const [file, setfile] = useState([])
+    const [metaError, setMetaError] = useState();
     const descriptionInput = useRef()
 
     const navigate = useNavigate()
@@ -25,13 +25,21 @@ const Dashboard = () => {
 
     console.log(user)
     useEffect(() => {
+        // localStorage.removeItem("address")
+        // localStorage.removeItem("userInfo")
+        if(localStorage.address){
+            setAccount(JSON.parse(localStorage.address));
+            window.web3 = new Web3(window.ethereum)
+            window.web3 = new Web3(window.web3.currentProvider)
+        }
+
         if(!user){
             navigate('/login')
         }
 
-        if (window.ethereum) {
-            window.ethereum.on("accountsChanged", accountsChanged);
-        }
+        // if (window.ethereum) {
+        //     window.ethereum.on("accountsChanged", accountsChanged);
+        // }
 
         const loadingData = async () => {
             await loadBlockchainData()
@@ -61,19 +69,24 @@ const Dashboard = () => {
     }
 
     const accountsChanged = async (newAccount) => {
-        setAccount(newAccount)
-        localStorage.setItem("address", JSON.stringify(newAccount))
         try {
-          const balance = await window.ethereum.request({
-            method: "eth_getBalance",
-            params: [newAccount.toString(), "latest"],
-          });
-          //setBalance(ethers.utils.formatEther(balance));
-        } catch (err) {
-          console.error(err);
-          //setErrorMessage("There was a problem connecting to MetaMask");
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user}`
+                }
+            }
+            const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/metamask`, { metamask: newAccount}, config)
+
+            setAccount(data.account)
+            localStorage.setItem("address", JSON.stringify(data.account))
+        } catch (error) {
+            //console.log(error.response.data.message)
+            setMetaError(error.response.data.message)
+            
         }
-      }
+        
+    }
 
     
     const loadWeb3 = async () => {
@@ -92,7 +105,7 @@ const Dashboard = () => {
 
     console.log(files)
     const loadBlockchainData = async () => {
-        setLoading(true)
+        //setLoading(true)
         // load account
         
         const web3 = window.web3 
@@ -133,7 +146,7 @@ const Dashboard = () => {
 
         
 
-        setLoading(false)
+        //setLoading(false)
     }
     
     
@@ -143,27 +156,26 @@ const Dashboard = () => {
 
     const uploadFile = async (description, file) => {
         console.log(description, file)
-        setLoading(true)
+        //setLoading(true)
 
         const client = makeStorageClient()
         try{
         const cid = await client.put(file)
         //const url = `https://${cid}.ipfs.w3s.link/${file[0].name}`
-
         await dstorage.methods.uploadFile(cid, file[0].size, file[0].type, file[0].name,description).send({ from: account })
             .on("transactionHash", (hash) => {
             console.log(hash)
-            setLoading(false)
+            //setLoading(false)
             window.location.reload()
             })
             .on("error", (e) => {
-            setLoading(false)
+            //setLoading(false)
             window.alert("Error")
             })
         
         } catch(error){
-        console.log(error)
-        setLoading(false)
+            console.log(error)
+            //setLoading(false)
         }
     }
 
@@ -211,7 +223,7 @@ const Dashboard = () => {
                         </form>
                     </div>
 
-                    <div className='bg-amazon_blue text-default max-w-3xl mx-auto mt-20'>
+                    <div className='bg-amazon_blue text-default max-w-7xl mx-auto mt-20 mb-20'>
                         <div className='border-b-2 border-default p-5'>
                             <h4 className='text-4xl'>View Uploaded Document Here</h4>
                         </div>
@@ -249,7 +261,8 @@ const Dashboard = () => {
                                     {files.map((item, idx) => (
                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={idx}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                {item.fileId}
+                                                {/* {item.fileId} */}
+                                                {idx+1}
                                             </th>
                                             <td className="px-6 py-4">
                                                 {item.fileName}
@@ -267,7 +280,7 @@ const Dashboard = () => {
                                                 {moment.unix(item.uploadTime).format('h:mm:ss A M/D/Y')}
                                             </td>
                                             <td className="px-6 py-4">
-                                            <a 
+                                            <a target="_blank"
                                                 href={`https://${item.fileHash}.ipfs.w3s.link/${item.fileName}`}
                                             >
                                                 {item.fileHash}
@@ -334,7 +347,11 @@ const Dashboard = () => {
                             <h4 className='text-4xl mb-3'>Metamask Account Not Found</h4>
                         </div>
                         <div className="py-8">
+                            {metaError ? (
+                                <p className="text-xl">{metaError}</p>
+                            ) : (
                             <p className="text-xl">To view dashboard you must login with metmask first. For more details visit Instructions</p>
+                            )}
                         </div>
                     </div>
                 )}

@@ -7,6 +7,12 @@ import { useStateContext } from '../context/ContextProvider';
 function Header({ connectHandler}) {
   const { user, account } = useStateContext()
 
+  const logOut = () => {
+    localStorage.removeItem("address");
+    localStorage.removeItem("userInfo");
+    window.location.reload()
+  }
+
   return (
     <div className='bg-amazon_blue flex flex-grow border-b-2 border-default items-center justify-between'>
         <div className='p-2 mx-10 cursor-pointer'>
@@ -30,9 +36,9 @@ function Header({ connectHandler}) {
               <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline' onClick={connectHandler}>Login With Metamask</p>
             )}
 
-            {/* {user && account && (
-              <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>{`${account.substring(0,5)}... ${account.substring(20, 24)}`}</p>
-            )} */}
+            {user && account && (
+              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>{`${account.substring(0,5)}... ${account.substring(20, 24)}`}</p>
+            )}
 
             
         </div>
