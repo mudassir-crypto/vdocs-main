@@ -6,6 +6,9 @@ import Dashboard from "./pages/Dashboard"
 import Instruction from "./pages/Instruction"
 import Register from "./pages/Register"
 import Login from "./pages/Login"
+import AdLogin from "./pages/admin/Login"
+import AdDashboard from "./pages/admin/Dashboard"
+import AdUser from "./pages/admin/User"
 import { useStateContext } from "./context/ContextProvider"
 
 const App = () => {
@@ -29,6 +32,9 @@ const App = () => {
           <Route path="/instruction" element={<Instruction/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/login" element={<Login/>} />
+          <Route path="admin" element={<AdLogin/>} />
+          <Route path="/admin/dashboard" element={<AdDashboard/>} />
+          <Route path="/admin/user" element={<AdUser/>} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { useStateContext } from '../context/ContextProvider';
 
 
-function Header({ connectHandler}) {
+function Header({ connectHandler, admin}) {
   const { user, account } = useStateContext()
 
   const logOut = () => {
@@ -20,7 +20,7 @@ function Header({ connectHandler}) {
             <img src={logo} height={50} width={120} alt="" />
           </Link>
         </div>
-        <div className='flex text-default text-lg mx-10 space-x-10 items-center'>
+        <div className={`${admin  ? "hidden" : "flex"} text-default text-lg mx-10 space-x-10 items-center`}>
             <Link to='/instruction'>
               <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Instructions</p>
             </Link>
@@ -39,8 +39,27 @@ function Header({ connectHandler}) {
             {user && account && (
               <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>{`${account.substring(0,5)}... ${account.substring(20, 24)}`}</p>
             )}
+        </div>
 
-            
+        <div className={`${admin == "login" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
+            <Link to='/instruction'>
+              <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Welcome To Admin Panel</p>
+            </Link>
+        </div>
+
+        <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
+            <p className='hidden md:inline'><h4 className='text-2xl'>Welcome to Admin Panel User</h4></p>
+        </div>
+
+        <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
+
+            <Link to='/instruction'>
+              <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Modify Users</p>
+            </Link>  
+
+            <Link to='/instruction'>
+              <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Log Out</p>
+            </Link>
         </div>
     </div>
   )
