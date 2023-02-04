@@ -21,7 +21,7 @@ export const ContextProvider = ({ children }) => {
         const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/getCurrentUser`, config)
 
         setUser(data.user)
-        console.log(data.user)
+        
       } catch (error) {
         console.log(error.response.data.message)
       }

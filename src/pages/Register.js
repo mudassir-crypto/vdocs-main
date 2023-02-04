@@ -31,8 +31,8 @@ const Register = () => {
                     'Content-Type': 'application/json'
                 }
             }
-            const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/register`, user, config)
-            console.log(data)
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/register`, user, config)
+            
             navigate('/login')
 
         } catch (error) {

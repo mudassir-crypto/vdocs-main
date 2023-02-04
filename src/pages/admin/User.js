@@ -4,7 +4,6 @@ import Header from '../../components/Header'
 import DStorage from '../../abis/DStorage.json'
 import { convertBytes } from "../../components/helpers"
 import moment from "moment/moment"
-import {SearchIcon} from "@heroicons/react/outline"
 import Web3 from 'web3'
 import { useStateContext } from '../../context/ContextProvider'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -12,7 +11,6 @@ import { useNavigate, useParams } from 'react-router-dom'
 function Dashboard() {
   const [files, setFiles] = useState([])
   const [student, setStudent] = useState({})
-  const [metamask, setMetamask] = useState("")
 
   const { user } = useStateContext()
 
@@ -25,7 +23,7 @@ function Dashboard() {
     if(!user){
         navigate('/login')
     }
-    //console.log(user.role)
+    
     if(user && user.role !== "admin"){
         navigate('/dashboard')
     }
@@ -46,30 +44,29 @@ function Dashboard() {
         }
     
             const { data } = await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user/${id}`, config)
+            
             setStudent(data.user)
-            console.log(data.user)
+            
             if(data.user.metamask){
                 await loadData(data.user.metamask)
             }   
         } catch (error) {
-        console.log(error.response.data.message)
+            console.log(error.response.data.message)
         }
     }
 
     const loadData = async (metamask) => {
         let web3 = new Web3(Web3.givenProvider)
-        //console.log(web3)
-        //const networkId = await web3.eth.net.getId()
+       
         const networkData = DStorage.networks['5777']
-        //console.log(`networkId: ${networkId}, networkData: ${networkData}`)
+        
         const dstorageCopy = new web3.eth.Contract(DStorage.abi, networkData.address)
-        //console.log(dstorageCopy)
+        
         const filesCount = await dstorageCopy.methods.fileCount().call()
 
         let arr = []
         for(let i = 1; i <= filesCount; i++){
             const file = await dstorageCopy.methods.getFiles(i).call()
-            //console.log(file.uploader, account)
             if(file.uploader.toLowerCase() === metamask.toLowerCase()){
                 arr.push(file)
             }
@@ -137,7 +134,7 @@ function Dashboard() {
                             {convertBytes(item.fileSize)}
                         </td>
                         <td className="px-6 py-4">
-                            {moment.unix(item.uploadTime).format('h:mm:ss A M/D/Y')}
+                            {moment.unix(item.uploadTime).format('h:mm:ss A D/M/Y')}
                         </td>
                         <td className="px-6 py-4">
                         <a target="_blank" rel="noreferrer"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import logo from '../images/logo-01.png'
 import { Link } from 'react-router-dom'
 import { useStateContext } from '../context/ContextProvider';
@@ -6,11 +6,10 @@ import { useStateContext } from '../context/ContextProvider';
 
 function Header({ connectHandler, admin}) {
   const { user, account } = useStateContext()
-  console.log(user)
 
   const logOut = () => {
-    localStorage.removeItem("address");
-    localStorage.removeItem("userInfo");
+    localStorage.removeItem("address")
+    localStorage.removeItem("userInfo")
     window.location.reload()
   }
 
@@ -47,24 +46,24 @@ function Header({ connectHandler, admin}) {
             )}
         </div>
 
-        <div className={`${admin == "login" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
+        <div className={`${admin === "login" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
             <Link to='/instruction'>
               <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Welcome To Admin Panel</p>
             </Link>
         </div>
 
-        <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
+        <div className={`${admin === "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
             <div className='hidden md:inline'><h4 className='text-2xl'>Welcome to Admin Panel {user.email}</h4></div>
         </div>
 
-        <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
+        <div className={`${admin === "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
 
             <Link to='/instruction'>
               <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Modify Users</p>
             </Link>  
 
-            <Link>
-              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer '>Log Out</p>
+            <Link to='/'>
+              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Log Out</p>
             </Link>
         </div>
     </div>

@@ -8,24 +8,22 @@ import { Web3Storage } from 'web3.storage'
 import { convertBytes } from "../components/helpers"
 import { useStateContext } from "../context/ContextProvider"
 import axios from "axios"
+import Loader from "../components/Loader"
 
 
 const Dashboard = () => {
-    //const [account, setAccount] = useState("")
+    
     const [loading, setLoading] = useState(false)
-    const [fileCount, setFileCount] = useState(0)
     const [dstorage, setDstorage] = useState({})
     const [files, setFiles] = useState([])
     const [file, setfile] = useState([])
-    const [metaError, setMetaError] = useState();
+    const [metaError, setMetaError] = useState()
     const descriptionInput = useRef()
 
     const navigate = useNavigate()
     const { user, account, setAccount } = useStateContext()
 
     useEffect(() => {
-        // localStorage.removeItem("address")
-        // localStorage.removeItem("userInfo")
         if(localStorage.address){
             setAccount(JSON.parse(localStorage.address));
             window.web3 = new Web3(window.ethereum)
@@ -40,24 +38,16 @@ const Dashboard = () => {
             navigate('/admin/dashboard')
         }
 
-        // if (window.ethereum) {
-        //     window.ethereum.on("accountsChanged", accountsChanged);
-        // }
-
-        const loadingData = async () => {
-            await loadBlockchainData()
-        }
-
         if(account){
             loadBlockchainData()
         }
-    }, [account, fileCount])
+    }, [account])
   
     const connect = async () => {
         if (window.ethereum) {
             try {
                 const res = await window.ethereum.request({
-                method: "eth_requestAccounts",
+                    method: "eth_requestAccounts",
                 })
                 window.web3 = new Web3(window.ethereum)
                 window.web3 = new Web3(window.web3.currentProvider)
@@ -81,7 +71,7 @@ const Dashboard = () => {
                 }
             }
             const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/metamask`, { metamask: newAccount}, config)
-            console.log(data)
+            
             setAccount(data.account)
             localStorage.setItem("address", JSON.stringify(data.account))
         } catch (error) {
@@ -92,33 +82,14 @@ const Dashboard = () => {
         
     }
 
-    
-    const loadWeb3 = async () => {
-        if(window.ethereum){
-        window.web3 = new Web3(window.ethereum)
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        //console.log("accounts", accounts)
-        } else if(window.web3){
-        window.web3 = new Web3(window.web3.currentProvider)
-        //console.log("window.web3", window.web3)
-        } else {
-        window.alert("Non-Ethereum Browser detected. Install Metamask")
-        navigate('/')
-        } 
-    }
-
-    console.log(files)
     const loadBlockchainData = async () => {
-        //setLoading(true)
-        // load account
+        setLoading(true)
         
         const web3 = window.web3 
-        // const accounts = await web3.eth.getAccounts()
-        // setAccount(accounts[0])
-        console.log(web3)
+        
         const networkId = await web3.eth.net.getId()
         const networkData = DStorage.networks[networkId]
-        console.log(`networkId: ${networkId}, networkData: ${networkData}`)
+        
         if(networkData){
 
             const dstorageCopy = new web3.eth.Contract(DStorage.abi, networkData.address)
@@ -128,7 +99,7 @@ const Dashboard = () => {
             const filesCount = await dstorageCopy.methods.fileCount().call()
             
             //console.log("fileCount: ", filesCount)
-            setFileCount(filesCount)
+            //setFileCount(filesCount)
             
             let arr = []
             for(let i = 1; i <= filesCount; i++){
@@ -140,8 +111,9 @@ const Dashboard = () => {
             
             }
             setFiles(arr)
-            
+            setLoading(false)
         } else {
+            setLoading(false)
             window.alert("DStorage contract not deployed to detected network")
             navigate('/')
         }
@@ -159,8 +131,7 @@ const Dashboard = () => {
     }
 
     const uploadFile = async (description, file) => {
-        console.log(description, file)
-        //setLoading(true)
+        setLoading(true)
 
         const client = makeStorageClient()
         try{
@@ -168,18 +139,18 @@ const Dashboard = () => {
         //const url = `https://${cid}.ipfs.w3s.link/${file[0].name}`
         await dstorage.methods.uploadFile(cid, file[0].size, file[0].type, file[0].name,description).send({ from: account })
             .on("transactionHash", (hash) => {
-            console.log(hash)
-            //setLoading(false)
+                console.log(hash)
+                setLoading(false)
             window.location.reload()
             })
             .on("error", (e) => {
-            //setLoading(false)
-            window.alert("Error")
+                setLoading(false)
+                window.alert("Error")
             })
         
         } catch(error){
             console.log(error)
-            //setLoading(false)
+            setLoading(false)
         }
     }
 
@@ -202,11 +173,12 @@ const Dashboard = () => {
     return (
         <div>
             <Header connectHandler={connect} /> 
-
+            {loading && <Loader />}
             <div className='max-w-7xl mx-auto mt-12 p-3'>
-              
+                
                 {account ? (
                     <>
+                    
                     <div className='bg-amazon_blue text-default max-w-3xl mx-auto'> 
                     <form onSubmit={handleSubmit}>
                         <div className='border-b-2 border-default p-5'>
@@ -281,7 +253,7 @@ const Dashboard = () => {
                                                 {convertBytes(item.fileSize)}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {moment.unix(item.uploadTime).format('h:mm:ss A M/D/Y')}
+                                                {moment.unix(item.uploadTime).format('h:mm:ss A D/M/Y')}
                                             </td>
                                             <td className="px-6 py-4">
                                             <a target="_blank" rel="noreferrer"
