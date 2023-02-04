@@ -6,6 +6,7 @@ import { useStateContext } from '../context/ContextProvider';
 
 function Header({ connectHandler, admin}) {
   const { user, account } = useStateContext()
+  console.log(user)
 
   const logOut = () => {
     localStorage.removeItem("address");
@@ -15,28 +16,28 @@ function Header({ connectHandler, admin}) {
 
   return (
     <div className='bg-amazon_blue flex flex-grow border-b-2 border-default items-center justify-between'>
-        <div className='p-2 mx-10 cursor-pointer'>
+        <div className='p-2 mx-2 lg:mx-10 cursor-pointer'>
           <Link to='/'>
             <img src={logo} height={50} width={120} alt="" />
           </Link>
         </div>
-        <div className={`${admin  ? "hidden" : "flex"} text-default text-lg mx-10 space-x-10 items-center`}>
+        <div className={`${admin  ? "hidden" : "flex"} text-default text-lg mx-6 lg:mx-10 space-x-5 lg:space-x-10 items-center`}>
             <Link to='/instruction'>
               <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Instructions</p>
             </Link>
             <Link to='/about'>
-              <p className='hover:underline hover:text-teal-300 cursor-pointer'>About Vidyalankar</p>
+              <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>About Vidyalankar</p>
             </Link>
             {!user && (
               <Link to='/register'>
-                <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Sign Up</p>
+                <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline '>Sign Up</p>
               </Link>
             )}
             {user && !account && (
               <>
-              <p className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline' onClick={connectHandler}>Login With Metamask</p>
+              <p className='hover:underline hover:text-teal-300 cursor-pointer' onClick={connectHandler}>Login With Metamask</p>
               
-              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Log Out</p>
+              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer '>Log Out</p>
               
               </>
             )}
@@ -53,7 +54,7 @@ function Header({ connectHandler, admin}) {
         </div>
 
         <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
-            <div className='hidden md:inline'><h4 className='text-2xl'>Welcome to Admin Panel User</h4></div>
+            <div className='hidden md:inline'><h4 className='text-2xl'>Welcome to Admin Panel {user.email}</h4></div>
         </div>
 
         <div className={`${admin == "dashboard" ? "flex" : "hidden"} text-default text-lg mx-10 space-x-10 items-center`}>
@@ -63,7 +64,7 @@ function Header({ connectHandler, admin}) {
             </Link>  
 
             <Link>
-              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer hidden md:inline'>Log Out</p>
+              <p onClick={logOut} className='hover:underline hover:text-teal-300 cursor-pointer '>Log Out</p>
             </Link>
         </div>
     </div>

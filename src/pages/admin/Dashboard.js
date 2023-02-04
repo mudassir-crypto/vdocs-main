@@ -65,7 +65,8 @@ function Dashboard() {
         }
     }
 
-    const searchUser = async () => {
+    const searchUser = async (e) => {
+        e.preventDefault()
         let usrToken = JSON.parse(localStorage.getItem("userInfo"))
         const search = searchInput.current.value 
  
@@ -78,8 +79,12 @@ function Dashboard() {
       <Header admin="dashboard"/>
 
        <div className='flex md:hidden max-w-5xl flex-1 bg-white rounded-lg text-default items-center mt-10 mx-4'>
-            <input type="text" placeholder='Enter User Name' className="w-full p-3 outline-none border-none rounded-lg font-semibold"/>
-            <SearchIcon className='h-8 w-8 mr-4 cursor-pointer hover:text-green-500'/>
+            <form className='flex flex-1 items-center' onSubmit={searchUser} >
+                <input type="text" placeholder='Enter User Name' className="w-full p-3 outline-none border-none rounded-lg font-semibold" ref={searchInput}/>
+                <button type='submit' className=''>
+                    <SearchIcon className='h-8 w-8 mr-4 cursor-pointer hover:text-green-500' />
+                </button>
+            </form>
         </div>  
       
 
@@ -88,8 +93,12 @@ function Dashboard() {
                 <div className='border-b-2 border-default p-4 flex items-center'>
                     <p className='text-3xl mr-20'>List of registered Users</p>
                     <div className='hidden md:flex max-w-5xl flex-1 bg-white rounded-lg text-default items-center'>
-                        <input type="text" placeholder='Enter User Name' className="w-full p-3 outline-none border-none rounded-lg font-semibold" ref={searchInput}/>
-                        <SearchIcon className='h-8 w-8 mr-4 cursor-pointer hover:text-green-500' onClick={searchUser}/>
+                        <form className='flex flex-1 items-center' onSubmit={searchUser} >
+                            <input type="text" placeholder='Enter User Name' className="w-full p-3 outline-none border-none rounded-lg font-semibold" ref={searchInput}/>
+                            <button type='submit' className=''>
+                                <SearchIcon className='h-8 w-8 mr-4 cursor-pointer hover:text-green-500' />
+                            </button>
+                        </form>
                     </div>
                 </div> 
             </div>

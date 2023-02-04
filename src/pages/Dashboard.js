@@ -27,7 +27,7 @@ const Dashboard = () => {
         // localStorage.removeItem("address")
         // localStorage.removeItem("userInfo")
         if(localStorage.address){
-            //setAccount(JSON.parse(localStorage.address));
+            setAccount(JSON.parse(localStorage.address));
             window.web3 = new Web3(window.ethereum)
             window.web3 = new Web3(window.web3.currentProvider)
         }
