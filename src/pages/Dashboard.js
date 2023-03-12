@@ -159,13 +159,23 @@ const Dashboard = () => {
         const description = descriptionInput.current.value 
         if(description === "") return 
         descriptionInput.current.value = null
-        
-        uploadFile(description, file)
+        var fileExist = false;
+        console.log(files)
+        console.log(file)
+        files.map(data => {
+            if(data.fileName === file[0].name && data.fileSize === file[0].size.toString()){
+                fileExist = true
+            }
+        })
+        if(fileExist == false)
+            uploadFile(description, file)
+        else
+            window.alert("File with name already exists")
     }
 
     const fileChange = (e) => {
         if(!e.target.files) return 
-
+        
         setfile(e.target.files)
     }
    
@@ -234,11 +244,11 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {files.map((item, idx) => (
+                                    {files.slice(0).reverse().map((item, idx) => (
                                         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700" key={idx}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {/* {item.fileId} */}
-                                                {idx+1}
+                                                {files.length - (idx)}
                                             </th>
                                             <td className="px-6 py-4">
                                                 {item.fileName}

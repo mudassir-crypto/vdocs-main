@@ -11,6 +11,10 @@
 # production
 /build
 
+#abis
+/Dstorage.json
+/Migrations.json
+
 # misc
 .DS_Store
 .env

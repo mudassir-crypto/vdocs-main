@@ -49,11 +49,11 @@ function Instruction() {
                        extension for browser of their choice. Ganache must be set on localhost:7545. Now open metamask from extensions tab on your browser and setup your wallet.
                     </p>
                     <p className='text-lg text-justify mt-2'>
-                      Once the wallet has been setup the user needs to add a new test network and name it ganache as shown in the picture. Click on dd network and then add a network manually and fill in the details as shown below
+                      Once the wallet has been setup the user needs to add a new test network and name it ganache as shown in the picture. Click on add network and then add a network manually and fill in the details as shown below
                     </p>
                     <div className='border-4 border-default mt-5 mb-3 flex flex-col space-y-5 lg:space-y-0 lg:flex-row justify-between'>
-                      <img src={instruction3} className='h-50 w-50' alt="" />
-                      <img src={instruction4} className='h-50 w-50' alt="" />
+                      <img src={instruction3} className='w-50' alt="" />
+                      <img src={instruction4} className='w-50' alt="" />
                     </div>
                     <p className='text-lg text-justify'>
                       After the network has been added the user must open the ganache application. From there the user must copy the private key of an account and import it
