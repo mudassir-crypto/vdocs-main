@@ -6,7 +6,7 @@ console.log(user);
 const transport = {
     host: 'smtp.example.com',
     secure: true,
-    auth: { user: 'vcafe.vit@gmail.com', pass: 'iajvttvshuwapnzx' },
+    auth: { user: '', pass: ' },
   }
   const defaults = {
     from: "vcafe.vit@gmail.com",
