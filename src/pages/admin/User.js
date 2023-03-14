@@ -157,6 +157,11 @@ function Dashboard() {
             </table>
         </div>
       </div>
+      
+      <div className="flex flex-row max-w-3xl space-x-5 mx-auto items-center justify-center">
+            <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold'>Accept Verification</button>
+            <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold'>Reject Verification</button>
+        </div>
     </div>
   )
 }

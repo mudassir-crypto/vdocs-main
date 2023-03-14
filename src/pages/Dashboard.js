@@ -11,6 +11,8 @@ import axios from "axios"
 import Loader from "../components/Loader"
 
 
+// import { Mailer } from 'nodemailer-react'
+
 const Dashboard = () => {
     
     const [loading, setLoading] = useState(false)
@@ -178,6 +180,13 @@ const Dashboard = () => {
         
         setfile(e.target.files)
     }
+
+    const sendMail = () => {
+        // mailer.send('VerificationMail', { firstName: 'Mathieu' }, {
+        //     to: 'my@email.com'
+        //   })
+    }
+
    
  
     return (
@@ -209,7 +218,7 @@ const Dashboard = () => {
                         </form>
                     </div>
 
-                    <div className='bg-amazon_blue text-default max-w-7xl mx-auto mt-20 mb-20'>
+                    <div className='bg-amazon_blue text-default max-w-7xl mx-auto mt-20 mb-10'>
                         <div className='border-b-2 border-default p-5'>
                             <h4 className='text-4xl'>View Uploaded Document Here</h4>
                         </div>
@@ -326,6 +335,9 @@ const Dashboard = () => {
                             </table>
                         </div>
                     </div> 
+                    <div className="flex flex-col items-center justify-center max-w-xl mx-auto mb-20">
+                        <button onClick={sendMail} className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold'>Submit for verification</button>
+                    </div>
                     </>
                 ) : (
                     <div className='bg-amazon_blue text-default max-w-3xl mx-auto p-3'> 
