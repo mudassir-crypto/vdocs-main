@@ -8,8 +8,8 @@ function Header({ connectHandler, admin}) {
   const { user, account } = useStateContext()
 
   const logOut = () => {
-    localStorage.removeItem("address")
-    localStorage.removeItem("userInfo")
+    sessionStorage.removeItem("address")
+    sessionStorage.removeItem("userInfo")
     window.location.reload()
   }
 

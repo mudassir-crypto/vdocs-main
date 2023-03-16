@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Header from '../components/Header'
 import { useStateContext } from '../context/ContextProvider'
+import { ToastContainer, toast } from 'react-toastify'
 
 const Login = () => {
   const { register, handleSubmit, watch, formState: { errors, dirtyFields } } = useForm({})
@@ -26,7 +27,7 @@ const Login = () => {
             }
         }
         const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/login`, user, config)
-        localStorage.setItem("userInfo", JSON.stringify(data.token))
+        sessionStorage.setItem("userInfo", JSON.stringify(data.token))
 
         setUser(data.user)
         
@@ -37,6 +38,16 @@ const Login = () => {
         }
     } catch (error) {
         console.log(error.response.data.message)
+        toast.error(error.response.data.message, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            });
     }
   }
   
@@ -44,6 +55,19 @@ const Login = () => {
     <div>
         <Header/>
 
+        <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable={false}
+            pauseOnHover={false}
+            theme="light"
+        />
+        <ToastContainer />
         <div className='max-w-3xl mx-auto py-10 px-5'>
             <div className='bg-amazon_blue text-default rounded-lg'>
                 <div className='border-b-2 border-default flex items-center justify-between'>

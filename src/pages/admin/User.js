@@ -19,7 +19,7 @@ function Dashboard() {
   const { userId } = useParams()
     
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem("userInfo"))
+    const token = JSON.parse(sessionStorage.getItem("userInfo"))
     if(!user){
         navigate('/login')
     }
@@ -33,7 +33,7 @@ function Dashboard() {
     
   }, [user, userId])
 
-  
+  console.log(student)
     const fetchUserById = async (token, id) => {
         
         try {
@@ -73,11 +73,28 @@ function Dashboard() {
         }
         setFiles(arr)
     }
+
+    const verifyStatus = async (statusType) => {
+        const token = JSON.parse(sessionStorage.getItem("userInfo"))
+        try {
+          const config = {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+          const { data } = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/verifyStudent/${student._id}`, { status: statusType}, config)
   
+          navigate("/admin/dashboard")
+        } catch (error) {
+          console.log(error.response.data.message)
+        }
+    }
+  
+    const btnHide = student.status === "verified" || student.status === "rejected" || student.isVerified === true
   return (
     <div>
       <Header admin="dashboard"/>
- 
+
       <div className='max-w-7xl mx-auto mt-6 md:mt-12 p-3'>
             <div className='bg-amazon_blue text-default max-w-7xl mx-auto'> 
                 <div className='border-b-2 border-default p-4 flex items-center'>
@@ -158,10 +175,13 @@ function Dashboard() {
         </div>
       </div>
       
-      <div className="flex flex-row max-w-3xl space-x-5 mx-auto items-center justify-center">
-            <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold'>Accept Verification</button>
-            <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold'>Reject Verification</button>
+      {student.status === "pending" && (
+        <div className={`flex flex-row max-w-3xl space-x-5 mx-auto items-center justify-center ${btnHide ? "hidden" : ""}`}>
+            <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold' onClick={() => verifyStatus("verified")}>Accept Verification</button>
+            <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold' onClick={() => verifyStatus("rejected")}>Reject Verification</button>
         </div>
+      )}
+        
     </div>
   )
 }

@@ -8,7 +8,7 @@ export const ContextProvider = ({ children }) => {
   const [account, setAccount] = useState("")
 
   useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"))
+    const userInfo = JSON.parse(sessionStorage.getItem("userInfo"))
 
     const fetchUser = async (token) => {
       try {

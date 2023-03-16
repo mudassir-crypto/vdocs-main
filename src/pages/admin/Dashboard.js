@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useTransition } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { useStateContext } from '../../context/ContextProvider'
 import Header from '../../components/Header'
@@ -14,7 +14,7 @@ function Dashboard() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem("userInfo"))
+        const token = JSON.parse(sessionStorage.getItem("userInfo"))
         fetchCurrentUser(token)
 
         if(!user){
@@ -63,15 +63,18 @@ function Dashboard() {
         }
     }
 
+
     const searchUser = async (e) => {
         e.preventDefault()
-        let usrToken = JSON.parse(localStorage.getItem("userInfo"))
+        let usrToken = JSON.parse(sessionStorage.getItem("userInfo"))
         const search = searchInput.current.value 
  
         searchInput.current.value = null
 
         await fetchUsers(usrToken, search)
     }
+
+
   return (
     <div>
       <Header admin="dashboard"/>

@@ -9,6 +9,7 @@ import { convertBytes } from "../components/helpers"
 import { useStateContext } from "../context/ContextProvider"
 import axios from "axios"
 import Loader from "../components/Loader"
+import { ToastContainer, toast } from 'react-toastify'
 
 
 // import { Mailer } from 'nodemailer-react'
@@ -25,9 +26,10 @@ const Dashboard = () => {
     const navigate = useNavigate()
     const { user, account, setAccount } = useStateContext()
 
+
     useEffect(() => {
-        if(localStorage.address){
-            setAccount(JSON.parse(localStorage.address));
+        if(sessionStorage.address){
+            setAccount(JSON.parse(sessionStorage.address));
             window.web3 = new Web3(window.ethereum)
             window.web3 = new Web3(window.web3.currentProvider)
         }
@@ -43,7 +45,7 @@ const Dashboard = () => {
         if(account){
             loadBlockchainData()
         }
-    }, [account])
+    }, [account, user])
   
     const connect = async () => {
         if (window.ethereum) {
@@ -64,7 +66,7 @@ const Dashboard = () => {
     }
 
     const accountsChanged = async (newAccount) => {
-        const token = JSON.parse(localStorage.getItem("userInfo"))
+        const token = JSON.parse(sessionStorage.getItem("userInfo"))
         try {
             const config = {
                 headers: {
@@ -75,7 +77,7 @@ const Dashboard = () => {
             const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/v1/metamask`, { metamask: newAccount}, config)
             
             setAccount(data.account)
-            localStorage.setItem("address", JSON.stringify(data.account))
+            sessionStorage.setItem("address", JSON.stringify(data.account))
         } catch (error) {
             //console.log(error.response.data.message)
             setMetaError(error.response.data.message)
@@ -160,11 +162,10 @@ const Dashboard = () => {
         e.preventDefault();
         const description = descriptionInput.current.value 
         if(description === "") return 
+        
         descriptionInput.current.value = null
-        var fileExist = false;
-        console.log(files)
-        console.log(file)
-        files.map(data => {
+        let fileExist = false
+        files.forEach(data => {
             if(data.fileName === file[0].name && data.fileSize === file[0].size.toString()){
                 fileExist = true
             }
@@ -181,17 +182,55 @@ const Dashboard = () => {
         setfile(e.target.files)
     }
 
-    const sendMail = () => {
-        // mailer.send('VerificationMail', { firstName: 'Mathieu' }, {
-        //     to: 'my@email.com'
-        //   })
+    const sendForVerification = async () => {
+        const token = JSON.parse(sessionStorage.getItem("userInfo"))
+        try {
+          const config = {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          }
+          const { data } = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/requestVerification`, { status: "pending"}, config)
+  
+          toast.success(data.message, {
+            position: "top-center",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+          })
+          
+          setTimeout(() => {
+            window.location.reload()
+          }, 3000)
+
+        } catch (error) {
+          console.log(error.response.data.message)
+        }
     }
 
-   
+    const btnDisable = user.isVerified || user.status === "verified" || user.status === "pending"
+
+   console.log(user)
  
     return (
         <div>
             <Header connectHandler={connect} /> 
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover={false}
+                theme="light"
+            />
             {loading && <Loader />}
             <div className='max-w-7xl mx-auto mt-12 p-3'>
                 
@@ -291,52 +330,13 @@ const Dashboard = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    {/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            1
-                                        </th>
-                                        <td className="px-6 py-4">
-                                            Aadhar
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            Aadhar scanned copy
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            pdf
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            326kb
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            view here
-                                        </td>
-                                    </tr>
-                                    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                            1
-                                        </th>
-                                        <td className="px-6 py-4">
-                                            Aadhar
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            Aadhar scanned copy
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            pdf
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            326kb
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            view here
-                                        </td>
-                                    </tr> */}
+                            
                                 </tbody>
                             </table>
                         </div>
                     </div> 
                     <div className="flex flex-col items-center justify-center max-w-xl mx-auto mb-20">
-                        <button onClick={sendMail} className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold'>Submit for verification</button>
+                        <button onClick={sendForVerification} className={`bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold ${btnDisable ? 'opacity-40' : ''}`} disabled={btnDisable}>Submit for verification</button>
                     </div>
                     </>
                 ) : (
