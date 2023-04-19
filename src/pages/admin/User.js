@@ -76,13 +76,17 @@ function Dashboard() {
 
     const verifyStatus = async (statusType) => {
         const token = JSON.parse(sessionStorage.getItem("userInfo"))
+        let improperDocuments = "";
+        if (statusType === "rejected") {
+            improperDocuments = prompt("Enter reason for rejection:");
+        }
         try {
           const config = {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           }
-          const { data } = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/verifyStudent/${student._id}`, { status: statusType}, config)
+          const { data } = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/verifyStudent/${student._id}`, { status: statusType, improperDocuments}, config)
   
           navigate("/admin/dashboard")
         } catch (error) {
@@ -175,7 +179,7 @@ function Dashboard() {
         </div>
       </div>
       
-      {student.status === "pending" && (
+      {student?.status === "pending" && (
         <div className={`flex flex-row max-w-3xl space-x-5 mx-auto items-center justify-center ${btnHide ? "hidden" : ""}`}>
             <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold' onClick={() => verifyStatus("verified")}>Accept Verification</button>
             <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold' onClick={() => verifyStatus("rejected")}>Reject Verification</button>
