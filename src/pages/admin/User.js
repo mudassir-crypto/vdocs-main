@@ -76,13 +76,17 @@ function Dashboard() {
 
     const verifyStatus = async (statusType) => {
         const token = JSON.parse(sessionStorage.getItem("userInfo"))
+        let improperDocuments = "";
+        if (statusType === "rejected") {
+            improperDocuments = prompt("Enter reason for rejection:");
+        }
         try {
           const config = {
             headers: {
               'Authorization': `Bearer ${token}`
             }
           }
-          const { data } = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/verifyStudent/${student._id}`, { status: statusType}, config)
+          const { data } = await axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/verifyStudent/${student._id}`, { status: statusType, improperDocuments}, config)
   
           navigate("/admin/dashboard")
         } catch (error) {
