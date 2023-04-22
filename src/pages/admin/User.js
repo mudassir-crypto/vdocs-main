@@ -179,7 +179,7 @@ function Dashboard() {
         </div>
       </div>
       
-      {student.status === "pending" && (
+      {student?.status === "pending" && (
         <div className={`flex flex-row max-w-3xl space-x-5 mx-auto items-center justify-center ${btnHide ? "hidden" : ""}`}>
             <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold' onClick={() => verifyStatus("verified")}>Accept Verification</button>
             <button className='bg-default text-amazon_blue w-full p-3 mt-3 text-xl rounded-lg font-bold' onClick={() => verifyStatus("rejected")}>Reject Verification</button>
