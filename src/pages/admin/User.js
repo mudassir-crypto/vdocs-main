@@ -95,6 +95,18 @@ function Dashboard() {
     }
   
     const btnHide = student.status === "verified" || student.status === "rejected" || student.isVerified === true
+
+    const handleClick = (i1, i2) => {
+        const url =    `https://${i1}.ipfs.w3s.link/${i2}`
+        const url2 = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+        const newWindow = window.open('', '_blank');
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.style.border = 'none';
+        newWindow.document.body.appendChild(iframe);
+      };
   return (
     <div>
       <Header admin="dashboard"/>
@@ -158,11 +170,9 @@ function Dashboard() {
                             {moment.unix(item.uploadTime).format('h:mm:ss A D/M/Y')}
                         </td>
                         <td className="px-6 py-4">
-                        <a target="_blank" rel="noreferrer"
-                            href={`https://${item.fileHash}.ipfs.w3s.link/${item.fileName}`}
-                        >
-                            {item.fileHash}
-                        </a>
+                        <button onClick={() => handleClick(item.fileHash, item.fileName)}>
+                                                View Doc Pdf
+                                            </button>
                         </td>
                         <td className="px-6 py-4">
                             <a

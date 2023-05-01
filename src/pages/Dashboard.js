@@ -10,6 +10,7 @@ import { useStateContext } from "../context/ContextProvider"
 import axios from "axios"
 import Loader from "../components/Loader"
 import { ToastContainer, toast } from 'react-toastify'
+import { Document, Page } from 'react-pdf';
 
 
 // import { Mailer } from 'nodemailer-react'
@@ -22,6 +23,7 @@ const Dashboard = () => {
     const [file, setfile] = useState([])
     const [metaError, setMetaError] = useState()
     const descriptionInput = useRef()
+    const [pdfFile, setPdfFile] = useState(null);
 
     const navigate = useNavigate()
     const { user, account, setAccount } = useStateContext()
@@ -214,6 +216,18 @@ const Dashboard = () => {
 
     const btnDisable = user.isVerified || user?.status === "verified" || user?.status === "pending"
 
+    const handleClick = (i1, i2) => {
+        const url =    `https://${i1}.ipfs.w3s.link/${i2}`
+        const url2 = `https://docs.google.com/viewer?url=${encodeURIComponent(url)}&embedded=true`
+        const newWindow = window.open('', '_blank');
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.style.border = 'none';
+        newWindow.document.body.appendChild(iframe);
+      };
+
    console.log(user)
  
     return (
@@ -314,14 +328,17 @@ const Dashboard = () => {
                                                 {moment.unix(item.uploadTime).format('h:mm:ss A D/M/Y')}
                                             </td>
                                             <td className="px-6 py-4">
-                                            <a target="_blank" rel="noreferrer"
+                                            <button onClick={() => handleClick(item.fileHash, item.fileName)}>
+                                                View Doc Pdf
+                                            </button>
+                                            {/* <a target="_blank" rel="noreferrer"
                                                 href={`https://${item.fileHash}.ipfs.w3s.link/${item.fileName}`}
                                             >
                                                 {item.fileHash}
-                                            </a>
+                                            </a> */}
                                             </td>
                                             <td className="px-6 py-4">
-                                                <a
+                                                    <a
                                                     href={"https://etherscan.io/address/" + item.uploader}
                                                     rel="noopener noreferrer"
                                                     target="_blank">
